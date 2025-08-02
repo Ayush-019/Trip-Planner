@@ -343,6 +343,14 @@ const ItineraryPreview = ({ itinerary, interests = [], onDownloadPDF }) => {
                                 <Typography sx={infoTextSx}>
                                   {activity.description}
                                 </Typography>
+                                {/* Location added here */}
+                                {activity.location && (
+                                  <Typography
+                                    sx={{ color: "#888", fontSize: 13 }}
+                                  >
+                                    {activity.location}
+                                  </Typography>
+                                )}
                               </div>
                             </Stack>
                           </Box>

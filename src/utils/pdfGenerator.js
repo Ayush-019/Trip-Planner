@@ -224,17 +224,25 @@ export const generatePDF = async (itinerary, options = {}) => {
     );
     doc.text(titleLines.slice(0, 2), textX, titleY); // Limit to 2 lines
 
-    // Subtitle/description
-    if (subText) {
+    // Description (mainText), then Location (subText)
+    if (mainText) {
       doc.setFont("helvetica", "normal");
       doc.setFontSize(10);
       doc.setTextColor(...colors.lightText);
-      const subY = titleY + titleLines.length * 12 + 5;
-      const subLines = doc.splitTextToSize(
-        cleanText(subText),
+      const descY = titleY + titleLines.length * 12 + 2;
+      const descLines = doc.splitTextToSize(
+        cleanText(mainText),
         contentWidth - textX - 10
       );
-      doc.text(subLines.slice(0, 3), textX, subY); // Limit to 3 lines
+      doc.text(descLines.slice(0, 3), textX, descY); // Limit to 3 lines
+
+      // Show location below description in italic and accent color
+      if (subText) {
+        doc.setFont("helvetica", "italic");
+        doc.setFontSize(10);
+        doc.setTextColor(...colors.accent);
+        doc.text(cleanText(subText), textX, descY + descLines.length * 12 + 2);
+      }
     }
 
     currentY += cardHeight + 15;
@@ -290,7 +298,8 @@ export const generatePDF = async (itinerary, options = {}) => {
       await addCardBlock({
         type: "Accommodation",
         title: day.stay_option.name || "Accommodation",
-        subText: day.stay_option.location || day.stay_option.address,
+        mainText: "", // No description provided
+        subText: day.stay_option.location || day.stay_option.address || "",
         imageUrl: day.stay_option.photoUrl,
         color: [155, 89, 182], // Purple for accommodation
       });
@@ -310,9 +319,8 @@ export const generatePDF = async (itinerary, options = {}) => {
         await addCardBlock({
           type: mealType.label,
           title: meal.name || mealType.label,
-          subText: [meal.description, meal.location]
-            .filter(Boolean)
-            .join(" • "),
+          mainText: meal.description || "",
+          subText: meal.location || "",
           imageUrl: meal.photoUrl,
           color: mealType.color,
         });
@@ -326,9 +334,8 @@ export const generatePDF = async (itinerary, options = {}) => {
           await addCardBlock({
             type: cleanText(activity.type) || "Activity",
             title: activity.name || "Activity",
-            subText: [activity.description, activity.location]
-              .filter(Boolean)
-              .join(" • "),
+            mainText: activity.description || "",
+            subText: activity.location || "",
             imageUrl: activity.photoUrl,
             color: [46, 204, 113], // Green for activities
           });

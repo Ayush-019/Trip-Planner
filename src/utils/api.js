@@ -54,6 +54,8 @@ For each day, output as follows:
   stay_option: { name: "...", location: "..." }
 }
 
+this is important , In name of breakfast, lunch and dinner and all activities also give the place name and location.
+Dont give location as 123 or ABC give actual places names and give its full location.
 Strictly follow this structure—DO NOT skip or combine categories, and do NOT explain; output ONLY the JSON array.
 `;
 
@@ -87,6 +89,8 @@ Strictly follow this structure—DO NOT skip or combine categories, and do NOT e
       data
     );
     const content = response.data.choices[0].message.content;
+    console.log("API response data:", content);
+
     // Parse the JSON from AI response
     // return JSON.parse(content);
     return JSON.parse(content);

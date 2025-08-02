@@ -43,7 +43,18 @@ function App() {
 
   return (
     <div style={{ padding: 20 }}>
-      <h2>Road Trip Itinerary Planner</h2>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center", // horizontally center
+          alignItems: "center", // vertically center
+          flexDirection: "column", // stack children vertically
+          textAlign: "center",
+          marginBottom: "-50px",
+        }}
+      >
+        <h2>Road Trip Itinerary Planner</h2>
+      </div>
       <LocationInput
         location={location}
         setLocation={setLocation}
