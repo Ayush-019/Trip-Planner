@@ -1,15 +1,15 @@
 import axios from "axios";
-
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
 export const generateItinerary = async (form) => {
   const apiKey = process.env.REACT_APP_OPENROUTER_API_KEY;
+  console.log("OpenRouter API Key:", apiKey);
 
   if (!apiKey) {
     throw new Error(
-      "OpenRouter API key not found. Please set REACT_APP_OPENROUTER_API_KEY in your .env file."
+      "OpenRouter API key not found. Please check your .env file."
     );
   }
 
-  // New prompt with hard inclusion for all categories
   const prompt = `
 You are an expert travel planner. Using ONLY the following user constraints, generate a JSON array (one object per day) for their road trip.
 
@@ -64,25 +64,32 @@ Strictly follow this structure—DO NOT skip or combine categories, and do NOT e
   };
 
   try {
+    // const config = {
+    //   headers: {
+    //     Authorization: `Bearer ${apiKey}`,
+    //     "Content-Type": "application/json",
+    //   },
+    // };
+    // console.log("Sending request with headers:", config.headers);
+
+    // const response = await axios.post(
+    //   "https://openrouter.ai/api/v1/chat/completions",
+    //   data,
+    //   config
+    // );
+
+    // console.log("API response status:", response.status);
+    // console.log("API response data:", response.data);
+
+    // const content = response.data.choices[0].message.content;
     const response = await axios.post(
-      "https://openrouter.ai/api/v1/chat/completions",
-      data,
-      {
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          "Content-Type": "application/json",
-          "HTTP-Referer": "http://localhost:3000",
-        },
-      }
+      `${backendUrl}/api/openrouter/completions`,
+      data
     );
     const content = response.data.choices[0].message.content;
-    console.log(content);
-    try {
-      return JSON.parse(content);
-    } catch (parseError) {
-      console.error("Failed to parse AI response as JSON:", content);
-      throw parseError;
-    }
+    // Parse the JSON from AI response
+    // return JSON.parse(content);
+    return JSON.parse(content);
   } catch (error) {
     console.error(
       "OpenRouter API request failed:",
